@@ -31,7 +31,7 @@ class DNSResourceRecord {
         friend class DNSResourceRecordBuilder;
 
     public: 
-        std::vector<uint8_t> serialize() {
+        std::vector<uint8_t> serialize() const {
             std::vector<uint8_t> rr;
             std::vector<std::string> labels;
             int start_index = 0;
@@ -75,21 +75,27 @@ private:
 public:
     DNSResourceRecordBuilder& setName(const std::string& name) {
         rr.name = name;
+        return *this;
     }
     DNSResourceRecordBuilder& setType(uint16_t type) {
         rr.type = type;
+        return *this;
     }
     DNSResourceRecordBuilder& setClass(uint16_t data_class) {
         rr.data_class = data_class;
+        return *this;
     }
     DNSResourceRecordBuilder& setTTL(uint32_t ttl) {
         rr.ttl = ttl;
+        return *this;
     }
     DNSResourceRecordBuilder& setRDLength(uint16_t data_length_in_octets) {
         rr.data_length_in_octets = data_length_in_octets;
+        return *this;
     }
     DNSResourceRecordBuilder& setRData(const std::vector<uint8_t> rData) {
         rr.rdata = rData;
+        return *this;
     }
     DNSResourceRecord build() {
         return rr;

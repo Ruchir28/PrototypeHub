@@ -35,7 +35,7 @@ class DNSQuestionSection {
         uint16_t getQclass() const {
             return qclass;
         }
-        std::vector<uint8_t> serialize() {
+        std::vector<uint8_t> serialize() const {
             std::vector<uint8_t> qsection;
             std::vector<std::string> labels;
             int start_index = 0;

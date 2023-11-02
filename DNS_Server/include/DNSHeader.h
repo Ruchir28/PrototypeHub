@@ -11,7 +11,7 @@ class DNSHeader {
         uint16_t arcount;   // number of resource entries
         friend class DNSHeaderBuilder;
     public:
-        std::vector<uint8_t> serializeHeader() {
+        std::vector<uint8_t> serializeHeader() const{
             std::vector<uint8_t> header;
             header.push_back(id >> 8);
             header.push_back(id & 0xFF);

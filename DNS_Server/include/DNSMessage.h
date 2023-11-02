@@ -28,6 +28,29 @@ class DNSMessage {
         std::vector<DNSResourceRecord> getAdditionals() const {
             return additionals;
         }
+        std::vector<uint8_t> serialize() const {
+            std::vector<uint8_t> message;
+            std::vector<uint8_t> header = this->header.serializeHeader();
+            message.insert(message.end(),header.begin(),header.end());
+            // note: the number of questions,answers,authorities and additionals are all specified in header
+            for(const DNSQuestionSection& question: questions) {
+                std::vector<uint8_t> s_question = question.serialize();
+                message.insert(message.end(),s_question.begin(),s_question.end());
+            }
+            for(const DNSResourceRecord& answer: answers) {
+                std::vector<uint8_t> s_answer = answer.serialize();
+                message.insert(message.end(),s_answer.begin(),s_answer.end());
+            }
+            for(const DNSResourceRecord& authority: authorities) {
+                std::vector<uint8_t> s_authority = authority.serialize();
+                message.insert(message.end(),s_authority.begin(),s_authority.end());
+            }
+            for(const DNSResourceRecord& additional: additionals) {
+                std::vector<uint8_t> s_additional = additional.serialize();
+                message.insert(message.end(),s_additional.begin(),s_additional.end());
+            }
+            return message;
+        }
 };
 
 class DNSMessageBuilder {
