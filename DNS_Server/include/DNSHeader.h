@@ -27,6 +27,41 @@ class DNSHeader {
             header.push_back(arcount & 0xFF);
             return header;
         }
+        std::uint16_t getID() const {
+            return id;
+        }
+        std::uint16_t getFlags() const {
+            return flags;
+        }
+        std::uint16_t getQDCount() const {
+            return qdcount;
+        }
+        std::uint16_t getANCount() const {
+            return ancount;
+        }
+        std::uint16_t getNSCount() const {
+            return nscount;
+        }
+        std::uint16_t getARCount() const {
+            return arcount;
+        }
+        
+        static DNSHeader parseHeader(const std::vector<uint8_t>& buffer, size_t& offset) {
+            DNSHeader header;
+            header.id = buffer[offset] << 8 | buffer[offset + 1];
+            offset += 2;
+            header.flags = buffer[offset] << 8 | buffer[offset + 1];
+            offset += 2;
+            header.qdcount = buffer[offset] << 8 | buffer[offset + 1];
+            offset += 2;
+            header.ancount = buffer[offset] << 8 | buffer[offset + 1];
+            offset += 2;
+            header.nscount = buffer[offset] << 8 | buffer[offset + 1];
+            offset += 2;
+            header.arcount = buffer[offset] << 8 | buffer[offset + 1];
+            offset += 2;
+            return header;
+        }
 };
 
 class DNSHeaderBuilder {

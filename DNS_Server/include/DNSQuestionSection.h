@@ -62,6 +62,36 @@ class DNSQuestionSection {
             qsection.push_back(qclass & 0xFF);
             return qsection;
         }
+
+        static DNSQuestionSection parse(const std::vector<uint8_t>& buffer, size_t& offset) {
+            std::string qname;
+            while(buffer[offset] != 0) {
+                uint8_t len = buffer[offset];
+                offset++;
+                for(int i=0;i<len;i++) {
+                    qname += static_cast<char>(buffer[offset]);
+                    offset++;
+                }
+                if (buffer[offset] != 0) { // Check if it's the end of the qname
+                    qname += '.';
+                }
+            }
+            // Skip the zero byte that ends the qname
+            if (offset < buffer.size()) {
+                offset++;
+            } else {
+                throw std::runtime_error("Buffer underflow error after reading qname");
+            }
+            // Ensure there's enough buffer left for qtype and qclass
+            if (offset + 4 > buffer.size()) {
+                throw std::runtime_error("Buffer underflow error while parsing qtype and qclass");
+            }
+            uint16_t qtype = (buffer[offset] << 8) | buffer[offset + 1];
+            offset += 2;
+            uint16_t qclass = (buffer[offset] << 8) | buffer[offset + 1];
+            offset += 2;
+            return DNSQuestionSection(qname, qtype, qclass);
+        }
 };
 
 class DNSQuestionSectionBuilder {
@@ -85,4 +115,5 @@ class DNSQuestionSectionBuilder {
         DNSQuestionSection build() {
             return DNSQuestionSection(qname, qtype, qclass);
         }
+
 };
